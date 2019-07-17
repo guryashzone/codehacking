@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\user;
+use App\role;
 use Illuminate\Http\Request;
+use App\Http\Requests\UsersRequest;
 
 class AdminUsersController extends Controller
 {
@@ -13,7 +15,8 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
-        return view('admin.users.index');
+        $users = User::all();
+        return view('admin.users.index',compact('users'));
     }
 
     /**
@@ -23,7 +26,9 @@ class AdminUsersController extends Controller
      */
     public function create()
     {
-        //
+
+        $roles = Role::all();
+        return view('admin.users.create',compact('roles'));
     }
 
     /**
@@ -32,9 +37,15 @@ class AdminUsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UsersRequest $request)
     {
-        //
+        User::create($request->all());
+
+        // $input = $request->all();
+        // if($request->file('photo_id')){
+            // return
+        // }
+        return redirect('admin/users');
     }
 
     /**
