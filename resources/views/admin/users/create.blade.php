@@ -32,7 +32,7 @@
 			<label for="status">
 				Status:
 			</label>
-			<select name="is_active" id="is_active" class="form-control">
+			<select name="is_active" id="is_active" class="form-control" value="{{ old('is_active') }}">
 				<option value="1">Active</option>
 				<option value="0" selected>Not active</option>
 			</select>
