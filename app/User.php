@@ -4,6 +4,7 @@ namespace App;
 
 use App\Role;
 use App\Photo;
+use App\Post;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -38,7 +39,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    
+    /**
+     * User parts
+     *
+     * 
+     */
     public function role(){
         return $this->belongsTo('App\Role');
     }
@@ -49,5 +55,23 @@ class User extends Authenticatable
         if(!empty($password)){
             $this->attributes['password'] = bcrypt($password);
         }   
+    }
+    public function isAdmin(){
+        if( $this->role->name == 'administrator' && $this->is_active == 1 ){
+            return true;
+        }else{
+            return false;
+
+        }
+    }
+
+    /**
+     * Posts parts
+     *
+     * 
+     */
+
+    public function posts(){
+        return $this->hasMany('App\Post');
     }
 }

@@ -4,7 +4,7 @@
 	<h1>Edit users</h1>
 	<div class="row">
 		<div class="col-sm-3">
-			<img src="{{ $user->photo ? $user->photo->file : 'http://placehold.it/400x400' }}" alt="" class="img-responsive img-rounded">
+			<img src="{{ $user->photo ? $user->photo->file : 'http://placehold.it/400x400' }}" alt="" class="img-responsive img-rounded" id="preview_image" onclick="$('#photo_id').click()" style="cursor:pointer" title="Upload image">
 		</div>
 		<div class="col-sm-9">
 			@include('includes.form_error')
@@ -27,7 +27,7 @@
 					<label for="role_id">
 						Role:
 					</label>
-					<select name="role_id" id="role_id" class="form-control"  value="{{old('role_id') ? old('role_id') : $user->role_id}}">
+					<select name="role_id" id="role_id" class="form-control"  value="{{old('role_id') ? old('role_id') : 0}}">
 						<option value disabled>-- Select role --</option>
 						@foreach ($roles as $role)
 							<option value="{{$role->id}}">{{$role->name}}</option>
@@ -40,7 +40,7 @@
 					</label>
 					<select name="is_active" id="is_active" class="form-control" value="{{ old('is_active') ? old('is_active') : $user->is_active }}">
 						<option value="1">Active</option>
-						<option value="0" selected>Not active</option>
+						<option value="0">Not active</option>
 					</select>
 				</div>
 				<div class="form-group">
@@ -49,17 +49,44 @@
 					</label>
 					<input type="password" name="password" id="password" class="form-control">
 				</div>
-				<div class="form-group">
-					<label for="photo_id">
+				<div class="form-group hide">
+					{{-- <label for="photo_id">
 						Upload photo_id:
-					</label>
+					</label> --}}
 					<input type="file" name="photo_id" id="photo_id" class="form-control">
 				</div>
 				<div class="form-group">
-					<input type="submit" class="btn btn-primary">
+					<input type="submit" class="btn btn-primary col-sm-6" value="Update User">
 				</div>
+			</form>
+			<form action="{{ route('users.destroy',$user->id) }}" method="POST">
+				@csrf
+				@method('DELETE')
+				<input type="submit" class="btn-danger btn col-sm-6" value="Delete User">
 			</form>
 		</div>
 	</div>
-
+@endsection
+@section('footer')
+	<script>
+		$(function(){
+			$("#role_id").val({{ $user->role_id }});
+		});
+		$(document).on("change",'#photo_id',function(){
+			var data = $(this)[0].files; //this file data
+			$.each(data, function(index, file){ //loop though each file
+				if(/(\.|\/)(gif|jpe?g|png)$/i.test(file.type)){ //check supported file type
+					var fRead = new FileReader(); //new filereader
+					fRead.onload = (function(file){ //trigger function on successful read
+					return function(e) {
+						// var img = $('<img/>').addClass('thumb').attr('src', e.target.result); //create image element 
+						$('#preview_image').prop('src',e.target.result);
+						// $('#thumb-output').append(img); //append image to output element
+					};
+				  	})(file);
+					fRead.readAsDataURL(file); //URL representing the file's data.
+				}
+			});
+		});
+	</script>
 @endsection
