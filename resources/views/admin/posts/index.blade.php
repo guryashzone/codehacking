@@ -4,6 +4,10 @@
 	<h1>Posts</h1>
 	<div class="row">
 		<div class="col-sm-12">
+			@if (Session::has('post'))
+				<div class="alert alert-success">{{ session('post') }}</div>
+			@endif
+
 			<table class="table">
 				<thead>
 					<tr>
@@ -25,8 +29,8 @@
 								<td><img src="{{ $post->photo ? $post->photo->file : 'https://placehold.it/400x400'}}" style="width:100px;height:50px" alt=""></td>
 								<td>{{ $post->user->name }}</td>
 								<td>{{ $post->category->name }}</td>
-								<td>{{ $post->title }}</td>
-								<td>{{ $post->body }}</td>
+								<td><a href="{{ route('posts.edit',$post->id) }}">{{ $post->title }}</a></td>
+								<td>{{ str_limit($post->body,30) }}</td>
 								<td>{{ $post->created_at->diffForHumans() }}</td>
 								<td>{{ $post->updated_at->diffForHumans() }}</td>
 							</tr>
